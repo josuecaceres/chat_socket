@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:chat_socket/widgets/widgets.dart';
 
-class ChatProvider extends ChangeNotifier {
+class ChatProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   final FocusNode focusNode = FocusNode();
   bool _escribiendo = false;

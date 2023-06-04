@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import 'package:chat_socket/models/usuario.dart';
+import 'package:chat_socket/services/auth_service.dart';
 
 class UsuariosScreen extends StatefulWidget {
   const UsuariosScreen({Key? key}) : super(key: key);
@@ -21,13 +24,20 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.exit_to_app),
-          onPressed: () {},
+          onPressed: () {
+            AuthService.deleteToken();
+            Navigator.pushReplacementNamed(context, 'login');
+          },
         ),
-        title: const Text('Mi nombre'),
+        title: Text(
+          authService.usuario.nombre,
+        ),
         centerTitle: true,
         actions: <Widget>[
           Container(

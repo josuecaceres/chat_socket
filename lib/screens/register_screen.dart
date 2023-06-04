@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:chat_socket/widgets/widgets.dart';
+import 'package:chat_socket/services/auth_service.dart';
+import 'package:chat_socket/helpers/show_alert.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -53,6 +57,7 @@ class __FormState extends State<_Form> {
     final nameCtrl = TextEditingController();
     final emailCtrl = TextEditingController();
     final passCtrl = TextEditingController();
+    final authService = Provider.of<AuthService>(context);
 
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -77,11 +82,23 @@ class __FormState extends State<_Form> {
             isPassword: true,
           ),
           BtnAzul(
-            text: 'Ingresar',
-            onPressd: () {
-              print(emailCtrl.text);
-              print(passCtrl.text);
-            },
+            text: 'Crear Cuenta',
+            onPressd: authService.autenticando
+                ? null
+                : () async {
+                    FocusScope.of(context).unfocus();
+                    final registerOk = await authService.register(
+                      nameCtrl.text.trim(),
+                      emailCtrl.text.trim(),
+                      passCtrl.text.trim(),
+                    );
+
+                    if (registerOk == true) {
+                      Navigator.pushReplacementNamed(context, 'usuarios');
+                    } else {
+                      showAlert(context, 'Registro incorrecto', registerOk);
+                    }
+                  },
           )
         ],
       ),
