@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:chat_socket/provider/chat_provider.dart';
+import 'package:chat_socket/services/auth_service.dart';
+import 'package:chat_socket/services/socket_service.dart';
 
 class ChatInput extends StatelessWidget {
   const ChatInput({super.key});
@@ -54,7 +56,21 @@ class _SendButton extends StatelessWidget {
       child: IconTheme(
         data: IconThemeData(color: Colors.blue.shade400),
         child: IconButton(
-          onPressed: chatProvider.escribiendo ? chatProvider.newMessage : null,
+          onPressed: chatProvider.escribiendo
+              ? () {
+                  final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+                  final authService = Provider.of<AuthService>(context, listen: false);
+                  final socketService = Provider.of<SocketService>(context, listen: false);
+
+                  socketService.emit('mensaje-personal', {
+                    'de': authService.usuario.uid,
+                    'para': chatProvider.usuarioPara.uid,
+                    'mensaje': chatProvider.textController.text,
+                  });
+
+                  chatProvider.sendMessage(authService.usuario.uid);
+                }
+              : null,
           icon: const Icon(
             Icons.send,
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:chat_socket/services/auth_service.dart';
+import 'package:chat_socket/services/socket_service.dart';
 import 'package:chat_socket/screens/screens.dart';
 
 class LoadingScreen extends StatelessWidget {
@@ -22,9 +24,12 @@ class LoadingScreen extends StatelessWidget {
 
   Future ckeckLoginState(BuildContext context) async {
     final authService = Provider.of<AuthService>(context, listen: false);
+    final socketService = Provider.of<SocketService>(context, listen: false);
+
     final autenticado = authService.isLoggedIn();
 
     if (await autenticado) {
+      socketService.connect();
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:chat_socket/widgets/widgets.dart';
+import 'package:chat_socket/services/socket_service.dart';
 import 'package:chat_socket/services/auth_service.dart';
 import 'package:chat_socket/helpers/show_alert.dart';
 
@@ -57,6 +58,7 @@ class __FormState extends State<_Form> {
     final emailCtrl = TextEditingController();
     final passCtrl = TextEditingController();
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -84,6 +86,7 @@ class __FormState extends State<_Form> {
                     final loginOk = await authService.login(emailCtrl.text.trim(), passCtrl.text.trim());
 
                     if (loginOk) {
+                      socketService.connect();
                       Navigator.pushReplacementNamed(context, 'usuarios');
                     } else {
                       showAlert(context, 'Login incorrecto', 'Verifique sus credenciales');
