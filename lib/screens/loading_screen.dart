@@ -26,9 +26,9 @@ class LoadingScreen extends StatelessWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     final socketService = Provider.of<SocketService>(context, listen: false);
 
-    final autenticado = authService.isLoggedIn();
+    final autenticado = await authService.isLoggedIn();
 
-    if (await autenticado) {
+    if (autenticado) {
       socketService.connect();
       Navigator.pushReplacement(
         context,
